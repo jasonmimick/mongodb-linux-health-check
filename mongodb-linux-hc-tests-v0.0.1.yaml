@@ -1,0 +1,47 @@
+# aem-mongodb-linux-hc-tests-v0.0.1
+# 2018-01-19
+#
+# Format specification:
+# - test: <unique_test_name>
+#   cmd: <linux command to execute, single string>
+#   pass:
+#       - <string-1 to find in cmd output>
+#       - - <string-2-1 to find in cmd output>
+#       - - <string-2-2 to find in cmd output>
+#       - - <string-2-2 to find in cmd output>
+#       - <string-3 to find in cmd output>
+#   fail:
+#       - <string1 to find in cmd output>
+#       - <string-2 to find in cmd output>
+#       - <string-3 to find in cmd output>
+#      
+# pass/fail strings at top level of list are OR-ed, that is
+# if one of the top level strings is found, then the test will pass.
+# However, if a nested list of strings is detected, then ALL the
+# lines in the nested item must be detected in for a PASS/FAIL
+# (the nested strings are AND-ed)
+#
+- test: "numa_zone_reclaim_mode"
+  cmd: "sysctl -a"
+  pass: [ "vm.zone_reclaim_mode = 0" ]
+  fail: [ "vm.zone_reclaim_mode = 2" ]
+- test: "selinux_disabled"
+  cmd: "sestatus"
+  fail:
+      - "SELinux status:                 enabled"
+      - "Current mode:                   enforcing"
+  pass:
+      - "mdiag.sh: line 670: sestatus: command not found"
+      - "SELinux status:                 disabled"
+      - - "SELinux status:                 enabled"
+        - "Current mode:                   permissive"
+- test: "swap_enabled_proc"
+  cmd: "cat /proc/swap"
+  fail: [ "Filename\t\t\t\tType\t\tSize\tUsed\tPriority" ]
+- test: "swap_enabled_top"
+  cmd: "top -l 1"
+  fail: [ "Kib Swap:     0 total" ]
+
+
+
+
