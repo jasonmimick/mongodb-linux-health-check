@@ -1,4 +1,4 @@
-aem-mongodb-linux-health-check
+ongodb-linux-health-check
 ==============================
 
 ~~~~
